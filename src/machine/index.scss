@@ -1,0 +1,765 @@
+@import 'reset';
+$white: #fff;
+$black: #000;
+$title: 28px;
+
+$map_bg: #5c5c5c;
+$border: #555;
+$body_bg: #42ae4f;
+$body_after_bg: #e1b555;
+$body_border: $border;
+$square_bg: #e1b005;
+$m_box_bg: #e1b005;
+$box_bg: #abbbdc;
+$box_border: #425e96;
+$push_hands: #425e96;
+$light_close: #c9c9c9;
+$light_working: #86e491;
+$star_five_bg: #ffd700;
+
+@mixin square {
+  // 方形区域，圆形包裹的边角，用于表示四周的各个器械
+  border: 3px solid $border;
+  background-color: $square_bg;
+  border-radius: 10px;
+}
+
+@mixin cylinder($width, $height, $radius: 8px, $bg_color: $box_bg, $border_color: $border) {
+  // 圆柱体， 用于表示盒子和盖子
+  display: block;
+  width: $width;
+  height: $height;
+  background-color: $bg_color;
+  border: 1px solid $border_color;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  position: relative;
+  z-index: 10;
+  &:before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    height: $radius;
+    top: -$radius/2;
+    border: 1px solid $border_color;
+    border-radius: 50%;
+    background-color: $bg_color;
+    z-index: 12;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    height: $radius;
+    bottom: -$radius/2;
+    border: 1px solid $border_color;
+    border-top-width: 0;
+    border-radius: 50%;
+    background-color: $bg_color;
+    z-index: 11;
+  }
+}
+
+@mixin push($direction: 'up') {
+  //  推手，可以向上或者向左
+  display: block;
+  width: 15px;
+  height: 25px;
+  background-color: $push_hands;
+  position: absolute;
+  &:before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    right: -5px;
+    height: 8px;
+    top: -8px;
+    background-color: $push_hands;
+  }
+  @if ($direction == 'up') {
+  } @else if ($direction == 'left') {
+    transform: rotate(-90deg);
+  } @else if ($direction == 'down') {
+    transform: rotate(-180deg);
+  } @else if ($direction == 'right') {
+    transform: rotate(90deg);
+  }
+}
+
+@mixin light($direction: 'right') {
+  // 指示灯，通常放在方形区域的右边或者下方
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: $light_close;
+  border: 2px solid $border;
+  border-radius: 50%;
+  @if ($direction == 'right') {
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  } @else if ($direction == 'bottom') {
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+  } @else if ($direction == 'left') {
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.machine-page {
+  width: 100%;
+  height: 100%;
+  background-color: $map_bg;
+  .title {
+    font-size: $title;
+    color: $white;
+    text-align: center;
+    padding-top: 20px;
+  }
+  .machine-map {
+    margin: 90px 0;
+    text-align: center;
+    position: relative;
+    .machine-body {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      margin: auto 0;
+      width: 600px;
+      height: 400px;
+      background-color: $body_bg;
+      border: 7px solid $body_border;
+      border-radius: 80px;
+      z-index: 10;
+      &:before {
+        content: '';
+        background-color: $body_after_bg;
+        position: absolute;
+        z-index: 9;
+        top: 30px;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+        border: 7px solid $body_border;
+        border-radius: 50px;
+      }
+      .machine-box-container {
+        width: 120px;
+        position: absolute;
+        right: -120px;
+        top: 150px;
+        .machine-box {
+          width: 100%;
+          height: 50px;
+          margin: 3px;
+          @include square;
+          position: relative;
+          .right-light {
+            @include light(right)
+          }
+          .box {
+            @include cylinder(24px, 28px);
+            position: absolute;
+            right: 48px;
+            top: 12px;
+          }
+          &.working {
+            .right-light {
+              background-color: $light_working;
+            }
+            .box {
+              animation: box_working 3s ease-in-out normal infinite;
+            }
+          }
+        }
+      }
+
+      .machine-sweet-container {
+        height: 130px;
+        position: absolute;
+        bottom: -130px;
+        left: 125px;
+        .machine-sweet {
+          float: left;
+          width: 50px;
+          height: 120px;
+          margin-right: 3px;
+          position: relative;
+          @include square;
+          &:before {
+            content: '';
+            position: absolute;
+            width: 27px;
+            height: 70px;
+            border-left: 2px solid $border;
+            border-right: 2px solid $border;
+            top: 0;
+            left: 10px
+          }
+          .bottom-light {
+            @include light(bottom);
+          }
+          .sweet-push {
+            @include push(up);
+            position: absolute;
+            left: 18px;
+            bottom: 50px;
+            z-index: 10;
+          }
+          .sweet {
+            display: block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid $border;
+            background-color: $box_bg;
+            transform: rotate(-45deg);
+            position: relative;
+            left: 18px;
+            top: 20px;
+          }
+          .opposite {
+            @include square;
+            display: block;
+            position: absolute;
+            left: 3px;
+            right: 3px;
+            top: -100px;
+            bottom: 160px;
+            z-index: 10;
+            .sweet-push-opposite {
+              @include push(down);
+              position: absolute;
+              left: 12px;
+              bottom: 8px;
+            }
+          }
+          &.working {
+            .bottom-light {
+              background-color: $light_working;
+            }
+            .sweet-push {
+              animation: sweet_push_working 3s ease-in-out normal infinite;
+            }
+            .sweet {
+              animation: sweet_working 3s ease-in-out normal infinite;
+            }
+          }
+        }
+      }
+      .machine-lid-container {
+        height: 150px;
+        position: absolute;
+        bottom: -100px;
+        left: -180px;
+        .machine-lid {
+          float: left;
+          width: 50px;
+          height: 170px;
+          margin-right: 3px;
+          position: relative;
+          @include square;
+          &:before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 90px;
+            border-left: 2px solid $border;
+            border-right: 2px solid $border;
+            bottom: 50px;
+            left: 8px
+          }
+          .bottom-light {
+            @include light(bottom)
+          }
+          .lid-push {
+            @include push(up);
+            position: absolute;
+            left: 18px;
+            bottom: 50px;
+          }
+          .lid {
+            @include cylinder(26px, 10px);
+            position: absolute;
+            left: 11px;
+            bottom: 87px;
+          }
+          &.working {
+            .bottom-light {
+              background-color: $light_working;
+            }
+            .lid-push {
+              animation: lid_push_working 18s normal infinite;
+            }
+            .lid {
+              animation: lid_working 18s normal infinite;
+            }
+          }
+          &:nth-child(2) {
+            .lid-push {
+              animation-delay: 6s;
+            }
+            .lid {
+              animation-delay: 6s;
+            }
+          }
+          &:nth-child(3) {
+            .lid-push {
+              animation-delay: 12s;
+            }
+            .lid {
+              animation-delay: 12s;
+            }
+          }
+        }
+      }
+      .mounting {
+        width: 80px;
+        height: 150px;
+        position: absolute;
+        top: 80px;
+        left: -90px;
+        @include square;
+        .box-push-container {
+          z-index: 100;
+          width: 70px;
+          height: 50px;
+          position: absolute;
+          right: -120px;
+          top: 50px;
+          @include square;
+          .box-push {
+            @include push(left);
+            position: absolute;
+            right: 30px;
+            bottom: 25px;
+            transform-origin: center bottom;
+          }
+        }
+        .box {
+          @include cylinder(24px, 28px);
+          right: -90px;
+          top: 60px;
+          z-index: 10;
+          opacity: 0;
+        }
+        .lid {
+          @include cylinder(26px, 12px);
+          left: 30px;
+          top: 20px;
+          z-index: 11;
+          opacity: 0;
+        }
+        &.working {
+          .box-push {
+            animation: mounting_box_push_working 6s normal infinite;
+            animation-delay: 3s;
+          }
+          .box {
+            animation: mounting_box_working 6s normal infinite;
+            animation-delay: 3s;
+          }
+          .lid {
+            animation: mounting_lid_working 6s normal infinite;
+            animation-delay: 3s;
+          }
+        }
+      }
+      .six-axis-arm {
+        position: absolute;
+        bottom: 10px;
+        left: -350px;
+        .lid {
+          @include cylinder(26px, 12px);
+          z-index: 12;
+          position: absolute;
+          bottom: 48px;
+          left: 0;
+          transform: rotate(180deg);
+          opacity: 0;
+          animation: captured_lid_working 6s normal infinite;
+        }
+      }
+      .six-axis-arm-push {
+        position: absolute;
+        top: 150px;
+        right: -280px;
+        .slot-container {
+          position: absolute;
+          bottom: 45px;
+          .box {
+            @include cylinder(24px, 28px);
+            z-index: 91;
+            transform: rotate(90deg);
+            opacity: 0;
+            animation: captured_box_working 6s normal infinite;
+            .lid {
+              @include cylinder(26px, 12px);
+              display: block;
+              position: absolute;
+              top: -6px;
+              left: -2px;
+              z-index: 92;
+            }
+          }
+          .star-five {
+            width: 0;
+            height: 0;
+            color: $star_five_bg;
+            position: absolute;
+            bottom: 12px;
+            left: -5px;
+            display: block;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 20px solid $star_five_bg;
+            z-index: 110;
+            opacity: 0;
+            animation: star_five 6s normal infinite;
+            &:before {
+              width: 0;
+              height: 0;
+              border-left: 8px solid transparent;
+              border-right: 8px solid transparent;
+              border-bottom: 25px solid $star_five_bg;
+              position: absolute;
+              top: -20px;
+              left: 0;
+              color: $white;
+              content: "";
+              transform: rotate(30deg);
+            }
+            &:after {
+              width: 0;
+              height: 0;
+              position: absolute;
+              color: $star_five_bg;
+              top: 0;
+              left: -30px;
+              border-left: 30px solid transparent;
+              border-right: 30px solid transparent;
+              border-bottom: 20px solid $star_five_bg;
+              content: "";
+              transform: rotate(70deg);
+            }
+          }
+        }
+      }
+      .unloading {
+        @include square;
+        width: 100px;
+        height: 50px;
+        z-index: 20;
+        position: absolute;
+        top: 90px;
+        right: 35px;
+        .left-light {
+          @include light(left);
+        }
+        .push {
+          @include push(right);
+          position: absolute;
+          right: 25px;
+          bottom: 25px;
+          transform-origin: center bottom;
+          z-index: 30;
+        }
+        .unloading-area {
+          @include square;
+          width: 120px;
+          height: 50px;
+          display: block;
+          right: -168px;
+          position: absolute;
+        }
+        .box {
+          @include cylinder(24px, 28px);
+          position: absolute;
+          right: -36px;
+          top: 12px;
+          opacity: 0;
+          z-index: 91;
+          .lid {
+            @include cylinder(26px, 12px);
+            position: absolute;
+            z-index: 12;
+            top: -5px;
+            left: -2px;
+          }
+        }
+        &.working {
+          .left-light {
+            background-color: $light_working;
+          }
+          .push {
+            animation: unloading-push-working 6s normal infinite;
+          }
+          .box {
+            animation: unloading-box-working 6s normal infinite;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes box_working {
+  0% {
+    transform: translate(0, -10px);
+  }
+  20% {
+    transform: translate(0, 0);
+  }
+  80% {
+    transform: translate(-80px, 0);
+  }
+  100% {
+    transform: translate(-80px, 10px);
+  }
+}
+
+@keyframes sweet_working {
+  0% {
+    transform: translate(0, 0) rotate(-45deg);
+  }
+  80% {
+    transform: translate(0, -45px) rotate(-45deg);
+  }
+  100% {
+    transform: translate(-10px, -43px) rotate(-45deg);
+  }
+}
+
+@keyframes sweet_push_working {
+  0% {
+    height: 25px;
+  }
+  80% {
+    height: 70px;
+  }
+  100% {
+    height: 25px;
+  }
+}
+
+@keyframes lid_push_working {
+  0% {
+    height: 25px;
+  }
+  16% {
+    height: 90px;
+  }
+  25% {
+    height: 25px;
+  }
+  100% {
+    height: 25px;
+  }
+}
+
+@keyframes lid_working {
+  0% {
+    transform: translate(0, 0);
+  }
+  16% {
+    transform: translate(0, -65px);
+    opacity: 1;
+  }
+  17% {
+    transform: translate(0, -65px);
+    opacity: 0;
+  }
+  34% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  38% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes mounting_box_push_working {
+  0% {
+    height: 25px;
+  }
+  5% {
+    height: 35px;
+  }
+  45% {
+    height: 96px;
+  }
+  60% {
+    height: 25px;
+  }
+  100% {
+    height: 25px;
+  }
+}
+
+@keyframes mounting_box_working {
+  0% {
+    transform: translate(0, 15px);
+    opacity: 0;
+  }
+  5% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(-59px, 0);
+  }
+  70% {
+    transform: translate(-59px, 0);
+    opacity: 1;
+  }
+  90% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  95% {
+    transform: translate(0, -15px);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes mounting_lid_working {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  45% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  55% {
+    transform: translate(0, 7px);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(0, 7px);
+    opacity: 1;
+  }
+  90% {
+    transform: translate(59px, 7px);
+    opacity: 1;
+  }
+  95% {
+    transform: translate(59px, -8px);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes captured_lid_working {
+  0% {
+    opacity: 0;
+  }
+  47% {
+    opacity: 0;
+  }
+  49% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes unloading-push-working {
+  0% {
+    height: 25px;
+  }
+  5% {
+    height: 35px;
+  }
+  45% {
+    height: 112px;
+  }
+  70% {
+    height: 25px;
+  }
+  100% {
+    height: 25px;
+  }
+}
+
+@keyframes unloading-box-working {
+  0% {
+    transform: translate(0, -15px);
+    opacity: 0;
+  }
+  5% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(78px, 0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(78px, 0);
+    opacity: 1;
+  }
+  52% {
+    transform: translate(78px, 0);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes captured_box_working {
+  0% {
+    opacity: 0;
+  }
+  47% {
+    opacity: 0;
+  }
+  49% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes star_five {
+  70% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,287 @@
+$map_bg: #5c5c5c;
+$border: #555;
+$base_bg: #8ca1cb;
+$arm_bg: #8ca1cb;
+$claw_bg: #e1b555;
+
+@mixin lid-arm-keyframes($name, $start, $first, $second, $threed, $point) {
+  animation: $name 18s normal infinite;
+  animation-delay: 1.5s;
+  @keyframes #{$name} {
+    0% {
+      // 初始位置
+      transform: rotate($start);
+    }
+    8% {
+      // 第一次抓取位置
+      transform: rotate($first);
+    }
+    9% {
+      // 悬停
+      transform: rotate($first);
+    }
+    16% {
+      // 路径起点位置
+      transform: rotate($start);
+    }
+    25% {
+      // 放置位置
+      transform: rotate($point);
+    }
+    26% {
+      // 悬停
+      transform: rotate($point);
+    }
+    34% {
+      // 路径起点位置
+      transform: rotate($start);
+    }
+    42% {
+      // 第二次抓取
+      transform: rotate($second);
+    }
+    43% {
+      // 悬停
+      transform: rotate($second);
+    }
+    51% {
+      // 路径
+      transform: rotate($start);
+    }
+    58% {
+      // 放置位置
+      transform: rotate($point);
+    }
+    59% {
+      // 悬停
+      transform: rotate($point);
+    }
+    67% {
+      // 路径
+      transform: rotate($start);
+    }
+    75% {
+      // 第三次抓取位置
+      transform: rotate($threed);
+    }
+    76% {
+      // 悬停
+      transform: rotate($threed);
+    }
+    86% {
+      // 路径
+      transform: rotate($start);
+    }
+    91% {
+      // 放置位置
+      transform: rotate($point);
+    }
+    92% {
+      // 悬停
+      transform: rotate($point);
+    }
+    100% {
+      // 回归起点
+      transform: rotate($start);
+    }
+  }
+}
+
+@mixin push-arm-keyframes($name, $start, $cash, $point) {
+  animation: $name 6s normal infinite;
+  @keyframes #{$name} {
+    0% {
+      // 初始位置
+      transform: rotate($start);
+    }
+    48% {
+      // 抓取位置
+      transform: rotate($cash);
+    }
+    52% {
+      // 悬停
+      transform: rotate($cash);
+    }
+    75% {
+      transform: rotate($point);
+    }
+    80% {
+      transform: rotate($point);
+    }
+    100% {
+      transform: rotate($start);
+    }
+  }
+}
+
+.arm-base {
+  z-index: 100;
+  width: 100px;
+  height: 40px;
+  background-color: $base_bg;
+  border: 3px solid $border;
+  border-bottom-width: 0;
+  border-radius: 10px;
+  position: relative;
+  &:after {
+    z-index: 101;
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    top: 30px;
+    left: -30px;
+    right: -30px;
+    background-color: $base_bg;
+    border: 3px solid $border;
+    border-radius: 10px;
+  }
+  .arm-section {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: $map_bg;
+    border: 3px solid $arm_bg;
+    border-radius: 50%;
+    bottom: 97px;
+    left: -3px;
+    transform-origin: center 112px;
+    &:after {
+      content: '';
+      position: absolute;
+      left: 7px;
+      right: 7px;
+      top: 7px;
+      bottom: 7px;
+      background-color: $arm_bg;
+    }
+    &:before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 70px;
+      background-color: $arm_bg;
+      top: 25px;
+      left: 5px;
+      border-radius: 5px;
+    }
+  }
+  .arm-section-1 {
+    bottom: 110px;
+    left: 40px;
+    transform-origin: center 110px;
+  }
+  .arm-section-4 {
+    border-color: $map_bg;
+    &:after {
+      left: 2px;
+      right: 2px;
+      top: 15px;
+      bottom: -7px;
+      border-radius: 5px;
+    }
+  }
+  .arm-claw {
+    position: relative;
+    background-color: $arm_bg;
+    width: 26px;
+    height: 26px;
+    left: -4px;
+    top: -2px;
+    border-radius: 12px;
+    transform: rotate(30deg);
+    &:after {
+      z-index: 100;
+      content: '';
+      position: absolute;
+      width: 35px;
+      height: 25px;
+      border: 3px solid $arm_bg;
+      transform: rotate(-60deg);
+      border-right-width: 0;
+      border-bottom-width: 0;
+      bottom: 22px;
+      left: -17px;
+    }
+    &:before {
+      z-index: 90;
+      content: '';
+      position: absolute;
+      width: 35px;
+      height: 25px;
+      border: 3px solid $arm_bg;
+      transform: rotate(60deg);
+      border-left-width: 0;
+      border-bottom-width: 0;
+      top: -24px;
+      left: 6px;
+    }
+  }
+  &.lid_arm {
+    .arm-section-1 {
+      transform: rotate(-10deg);
+    }
+    .arm-section-2 {
+      transform: rotate(-50deg);
+    }
+    .arm-section-3 {
+      transform: rotate(110deg);
+    }
+    .arm-section-4 {
+      transform: rotate(70deg);
+    }
+    .arm-claw {
+      transform: rotate(0deg);
+    }
+    &.working {
+      .arm-section-1 {
+        @include lid-arm-keyframes(arm-section-1-working, -10deg, -12deg, 10deg, 26deg, 12deg);
+      }
+      .arm-section-2 {
+        @include lid-arm-keyframes(arm-section-2-working, -50deg, 45deg, 33deg, 25deg, 22deg);
+      }
+      .arm-section-3 {
+        @include lid-arm-keyframes(arm-section-3-working, 110deg, 85deg, 68deg, 53deg, 20deg);
+      }
+      .arm-section-4 {
+        @include lid-arm-keyframes(arm-section-4-working, 70deg, 50deg, 56deg, 50deg, 20deg);
+      }
+      .arm-claw {
+        @include lid-arm-keyframes(arm-claw-working, 0, 12deg, 13deg, 26deg, 105deg);
+      }
+    }
+  }
+  &.push_arm {
+    .arm-section-1 {
+      transform: rotate(20deg);
+    }
+    .arm-section-2 {
+      transform: rotate(-25deg);
+    }
+    .arm-section-3 {
+      transform: rotate(-40deg);
+    }
+    .arm-section-4 {
+      transform: rotate(-60deg);
+    }
+    .arm-claw {
+      transform: rotate(-30deg);
+    }
+    &.working {
+      .arm-section-1 {
+        @include push-arm-keyframes(push-arm-section-1-working, 15deg, 18deg, 20deg);
+      }
+      .arm-section-2 {
+        @include push-arm-keyframes(push-arm-section-2-working, 50deg, -52deg, -25deg);
+      }
+      .arm-section-3 {
+        @include push-arm-keyframes(push-arm-section-3-working, -100deg, -75deg, -40deg);
+      }
+      .arm-section-4 {
+        @include push-arm-keyframes(push-arm-section-4-working, -80deg, -70deg, -60deg);
+      }
+      .arm-claw {
+        @include push-arm-keyframes(push-arm-claw-working, 0, 90deg, -30deg);
+      }
+    }
+  }
+}

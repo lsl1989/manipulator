@@ -1,5 +1,10 @@
 # manipulator
 
+一个模拟流水线生产装配的网页，供学习交流用.
+https://zhuanlan.zhihu.com/p/71713721
+纯css实现的机械臂效果
+Animation of manipulator based on pure CSS.
+
 ## Project setup
 ```
 yarn install
